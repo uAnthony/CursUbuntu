@@ -15,7 +15,7 @@ private:
      Query1* A;
 public slots:
     void draw_table(int);
-    void make_gaming_set(int,double);
+    void make_gaming_set(int,double,const QString&);
 };
 
 #endif // TASKS_H

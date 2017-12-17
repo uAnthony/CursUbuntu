@@ -118,77 +118,11 @@
      </widget>
     </widget>
     <widget class="QWidget" name="secondPageWidget">
-     <widget class="QComboBox" name="comboBox">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>40</y>
-        <width>171</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Mining</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gaming</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Math</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Graphic</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>271</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Choose assignment for your computer:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>100</y>
-        <width>331</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Choose the max cost of your computer:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="MaxCost">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>110</y>
-        <width>171</width>
-        <height>31</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QPushButton" name="button_generate">
       <property name="geometry">
        <rect>
-        <x>280</x>
-        <y>160</y>
+        <x>490</x>
+        <y>30</y>
         <width>171</width>
         <height>51</height>
        </rect>
@@ -205,6 +139,107 @@
         <width>881</width>
         <height>151</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>268</width>
+        <height>161</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Choose assignment for your computer:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Choose the max cost of your computer:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Choose a name for your computer:</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>289</x>
+        <y>24</y>
+        <width>151</width>
+        <height>181</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QComboBox" name="comboBox">
+         <item>
+          <property name="text">
+           <string>Mining</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Gaming</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Math</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Graphic</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="MaxCost"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="name"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="Label_error_name">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>150</y>
+        <width>351</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Label_error_cost">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>100</y>
+        <width>351</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </widget>

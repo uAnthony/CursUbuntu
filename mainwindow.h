@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QTableView>
 #include <QIntValidator>
+#include <QString>
 
 namespace Ui {
 class MainWindow;
@@ -29,7 +30,7 @@ private:
 
 signals:
     void draw(int index);
-    void assigment(int index, double money);
+    void assigment(int index, double money, const QString& name);
 
 private slots:
     void draw0();

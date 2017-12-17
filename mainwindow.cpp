@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent):
 
     QValidator *validator = new QIntValidator(10000, 999000, this);
     ui->MaxCost->setValidator(validator);
+    ui->name->setInputMask("NNNNNNNN;_");
+    ui->name->setCursorPosition(0);
 
     connect(ui->pushButton_1, SIGNAL(toggled(bool)),this,SLOT(draw0()));
     connect(ui->pushButton_2, SIGNAL(toggled(bool)),this,SLOT(draw1()));
@@ -98,9 +100,18 @@ void MainWindow::send_index4()
 }
 
 void MainWindow::send_assignment()
-{
-    //if(ui->MaxCost->text().toDouble());
-    emit assigment(ui->comboBox->currentIndex(),ui->MaxCost->text().toDouble());
+{   
+    if((ui->MaxCost->text().toDouble() > 0))
+    {
+        ui->Label_error_cost->setText("");
+        if(!ui->name->text().isEmpty())
+        {
+            ui->Label_error_name->setText(""); ;
+            emit assigment(ui->comboBox->currentIndex(), ui->MaxCost->text().toDouble(), ui->name->text());
+        }
+          else ui->Label_error_name->setText("Incorrect name"); ;
+    }
+    else ui->Label_error_cost->setText("Incorrect max cost!");
 }
 
 

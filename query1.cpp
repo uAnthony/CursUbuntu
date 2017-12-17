@@ -74,17 +74,13 @@ void Query1::draw(int button_index,QWidget *window, QTableView* table)
         break;
     }
     }
-
-   // tm = new QSqlTableModel(window , db);
-   // tm->setTable("\"Memory\"");
    Q_ASSERT(tm->select());
-  //  table_all = new QTableView(window);
-   // table_all->setGeometry(200,40,800,500);
     table_all->show();
 }
 
-void Query1::generate_lowprise_set(QWidget *window, QTableView* table)
+void Query1::generate_lowprise_set(QWidget *window, QTableView* table,const QString& name)
 {
+     int total = 0;
      tm = new QSqlTableModel(window, db);
      tm->setTable("\"Set\"");
      tm->setHeaderData(2,Qt::Horizontal,QObject::tr("Graphic_card"));
@@ -94,57 +90,79 @@ void Query1::generate_lowprise_set(QWidget *window, QTableView* table)
      tm->setHeaderData(7,Qt::Horizontal,QObject::tr("Mem_num"));
      tm->setHeaderData(9,Qt::Horizontal,QObject::tr("Power_supply"));
      tm->insertRow(0);
-
      table->setModel(tm);
+
      table->resizeColumnToContents(11);
+     tm->setData(tm->index(0,0),name);
+     //дата
+     QDate date;
+     date = date.currentDate();
+     QString date_string = date.toString("yyyy-mm-dd");
+     tm->setData(tm->index(0,1),date);
+     QString memory_type;
+     QString socket;
+     int total_power;
+
+
+QSqlQuery query1("SELECT \"Model\",\"Price\",\"Socket\",\"TDP\" FROM \"CPU\" WHERE \"Price\" = (SELECT min(\"Price\") FROM \"CPU\")");
+     while (query1.next()){
+     tm->setData(tm->index(0,4),query1.value(0).toString());
+     tm->setData(tm->index(0,10),query1.value(1).toInt());
+     socket = query1.value(2).toString();
+     total_power = query1.value(3).toInt();
+     tm->setData(tm->index(0,11),total_power);
+     total = query1.value(1).toInt();
+     }
+
+
+QSqlQuery query2(QString("SELECT \"Model\",\"Price\",\"Memory_type\" FROM \"Motherboard\" WHERE \"Price\" = (SELECT Min(\"Price\")FROM (SELECT \"Model\", \"Price\", \"Socket\" FROM \"Motherboard\" WHERE \"Socket\" = \'%1\') as socket);").arg(socket));
+         while (query2.next()){
+          tm->setData(tm->index(0,5),query2.value(0).toString());
+          tm->setData(tm->index(0,10),total + query2.value(1).toInt());
+          memory_type = query2.value(2).toString();
+          total = total + query2.value(1).toInt();
+         }
+
+QSqlQuery query3("SELECT \"Model\",\"Price\",\"Power_consumption_loaded\" FROM \"Graphic_card\" WHERE \"Price\" = (SELECT min(\"Price\") FROM \"Graphic_card\")");
+     while (query3.next()){
+         tm->setData(tm->index(0,2),query3.value(0).toString());
+         tm->setData(tm->index(0,10),total + query3.value(1).toInt());
+         total_power = total_power + query3.value(2).toInt();
+         tm->setData(tm->index(0,11), total_power);
+         total = total + query3.value(2).toInt();
+     }
+
+    tm->setData(tm->index(0,3),1);
+
+QSqlQuery query4(QString("SELECT \"Model\",\"Price\",\"Type\" FROM \"Memory\"WHERE(\"Price\"=(SELECT min(\"Price\") FROM (SELECT \"Price\", \"Type\"  FROM \"Memory\"  WHERE \"Type\" = \'%1\' )AS Type))").arg(memory_type));
+    while (query4.next()) {
+        tm->setData(tm->index(0,6),query4.value(0).toString());
+        tm->setData(tm->index(0,10),total + query4.value(1).toInt());
+        total = total + query4.value(1).toInt();
+    }
+     tm->setData(tm->index(0,7),1);
+
+     QSqlQuery query5("SELECT \"Model\",\"Price\" FROM \"System_disk\" WHERE \"Price\" = (SELECT min(\"Price\") FROM \"System_disk\")");
+         while (query5.next()) {
+             tm->setData(tm->index(0,8),query5.value(0).toString());
+             tm->setData(tm->index(0,10),total + query5.value(1).toInt());
+             total = total + query5.value(1).toInt();
+         }
+
+     total_power = total_power*1.33;
+     QString total_power1 = QString::number(total_power);
+
+     QSqlQuery query6(QString("SELECT \"Model\",\"Price\" FROM \"Power_supply\" WHERE \"Price\" = (SELECT min(\"Price\") FROM (SELECT \"Model\",\"Price\" FROM \"Power_supply\" WHERE \"Power_limit\" > \'%1\') AS limit1);").arg(total_power1));
+         while (query6.next()) {
+             tm->setData(tm->index(0,9),query6.value(0).toString());
+             tm->setData(tm->index(0,10),total + query6.value(1).toInt());
+             total = total + query6.value(1).toInt();
+         }
+
      table->show();
-
-     QSqlQuery query("SELECT \"Model\",\"Price\" FROM \"CPU\" WHERE \"Price\" = (SELECT min(\"Price\") FROM \"CPU\")");
-     while (query.next()) {
-     tm->setData(tm->index(0,6),query.value(0).toString());
-    }
-
-
-   /*ПАМЯТЬ
-    QSqlQuery query("SELECT \"Model\",\"Price\" FROM \"Memory\" WHERE \"Price\" = (SELECT min(\"Price\") FROM \"Memory\")");
-    while (query.next()) {
-    tm->setData(tm->index(0,6),query.value(0).toString());
-    }
-
-    */
-
-
-    //QSqlQueryModel model;
-   /* model.setQuery("SELECT * FROM \"CPU\"");
-    if (model.lastError().isValid())
-        qDebug() << model.lastError();
-  //  SELECT \"Model\",\"Price\" FROM \"Memory\" WHERE \"Price\" = (SELECT min(\"Price\") FROM \"Memory\"
-    table->setModel(&model);
-    table->hide();
-    table->show();*/
 }
 
 
-
-
-    /*
-
-   // tm = new QSqlTableModel(window , db);
-    QSqlQueryModel model;
-    model.setQuery("select * from CPU");
-    table_all = table;
-    table_all->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-   // tm->setTable("CPU");
-   // bool check = tm->select();
-    table_all->setGeometry(50,50,200,200);
-    table_all->setModel(&model);
-    table_all->show();
-
-
-    //table_all->show();
-
-    //tm->setTable();*/
 
 
 

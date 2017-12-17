@@ -12,6 +12,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlField>
+#include <QDate>
 
 class Query1 : public QObject
 {
@@ -19,9 +20,10 @@ class Query1 : public QObject
 public:
     Query1();
     void draw(int, QWidget *a, QTableView* table);
-    void generate_lowprise_set(QWidget *window, QTableView* table);
+    void generate_lowprise_set(QWidget *window, QTableView* table, const QString& name);
 private:
     bool ok;
+    int voltage;
     QSqlDatabase db;
     QSqlTableModel *tm;
     QTableView *table_all;
