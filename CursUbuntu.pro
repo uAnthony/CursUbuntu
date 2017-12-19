@@ -18,12 +18,10 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     tasks.cpp \
-    query1.cpp \
-    set.cpp
+    query1.cpp
 
 HEADERS  += mainwindow.h \
     tasks.h \
-    query1.h \
-    set.h
+    query1.h
 
 FORMS    += mainwindow.ui

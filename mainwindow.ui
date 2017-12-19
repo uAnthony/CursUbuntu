@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>937</width>
-    <height>537</height>
+    <width>1154</width>
+    <height>638</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -98,8 +98,8 @@
      <rect>
       <x>0</x>
       <y>50</y>
-      <width>921</width>
-      <height>421</height>
+      <width>1141</width>
+      <height>511</height>
      </rect>
     </property>
     <widget class="QWidget" name="firstPageWidget">
@@ -242,20 +242,76 @@
        <string/>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="thirdPageWidget">
-     <widget class="QPushButton" name="pushButton_6">
+     <widget class="QPushButton" name="button_save">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
-        <x>410</x>
-        <y>170</y>
-        <width>99</width>
-        <height>27</height>
+        <x>690</x>
+        <y>30</y>
+        <width>171</width>
+        <height>51</height>
        </rect>
       </property>
       <property name="text">
-       <string>3</string>
+       <string>Save configuration</string>
       </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="thirdPageWidget">
+     <widget class="QPushButton" name="button_show_set">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>430</y>
+        <width>221</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Show configuration</string>
+      </property>
+     </widget>
+     <widget class="QTableView" name="MySets">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>371</width>
+        <height>391</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>10</y>
+        <width>731</width>
+        <height>481</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QTableView" name="set_CPU"/>
+       </item>
+       <item>
+        <widget class="QTableView" name="set_Card"/>
+       </item>
+       <item>
+        <widget class="QTableView" name="set_Motherboard"/>
+       </item>
+       <item>
+        <widget class="QTableView" name="set_Memory"/>
+       </item>
+       <item>
+        <widget class="QTableView" name="set_Ram"/>
+       </item>
+       <item>
+        <widget class="QTableView" name="set_Power_suppy"/>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="fourthPageWidget">
@@ -334,6 +390,19 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="show_disks">
+         <property name="text">
+          <string>Disks</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QTableView" name="StockView">
@@ -354,7 +423,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>937</width>
+     <width>1154</width>
      <height>25</height>
     </rect>
    </property>

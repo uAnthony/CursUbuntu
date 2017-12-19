@@ -15,7 +15,10 @@ private:
      Query1* A;
 public slots:
     void draw_table(int);
-    void make_gaming_set(int,double,const QString&);
+    void make_lowprise_set(int,double,const QString&);
+    void sql_save_set();
+    void get_error();
+    void draw_my_sets();
 };
 
 #endif // TASKS_H
