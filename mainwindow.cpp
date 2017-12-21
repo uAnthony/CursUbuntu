@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent):
     ui->name->setInputMask("NNNNNNNN;_");
     ui->name->setCursorPosition(0);
 
-    connect(ui->pushButton_1, SIGNAL(toggled(bool)),this,SLOT(draw0()));
+    //connect(ui->pushButton_1, SIGNAL(toggled(bool)),this,SLOT(draw0()));
     connect(ui->pushButton_2, SIGNAL(toggled(bool)),this,SLOT(draw1()));
     connect(ui->pushButton_3, SIGNAL(toggled(bool)),this,SLOT(draw2()));
     connect(ui->pushButton_4, SIGNAL(toggled(bool)),this,SLOT(draw3()));

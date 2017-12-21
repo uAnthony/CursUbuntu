@@ -22,6 +22,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     tasks.h \
-    query1.h
+    query1.h \
+    parameters.h
 
 FORMS    += mainwindow.ui
