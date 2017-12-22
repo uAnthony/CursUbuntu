@@ -25,11 +25,12 @@ public:
     void generate_lowprise_set(QWidget *window, QTableView* table, const QString& name);
     void save_new_set();
     int get_total_cost();
-    void make_gaming_set(QWidget *window, QTableView* table,int money);
-    void make_mining_set(QWidget *window, QTableView* table);
+    void make_gaming_set( QTableView* table,int money);
+    void make_mining_set(QTableView* table,int money);
 
 
 private:
+    QSqlQuery *query_power_supply;
     bool ok;
     bool budget;
     set current_set;
@@ -59,10 +60,12 @@ private:
     QTableView *table4;
     QTableView *table5;
     QTableView *my_table_view;
+    void reset();
     int get_price(QString type,QString model);
     void set_one_part(QWidget* window,QSqlTableModel*,QTableView*,QString table_name, int index);
     void upgrade_power_supply(QTableView* table, int money,int power);
-    void upgrade_graphic_card(QTableView* table, int money,int power);
+    void upgrade_gaming_card(QTableView* table, int money);
+    void upgrade_mining_card(QTableView* table, int money);
     bool make_gaming_level(QTableView* table, int money,int cores,int card_memory,int memory_capacity);
 private slots:
         void my_sets_pressed(QWidget*, QTableView* Widget0,QTableView* Widget1, QTableView* Widget2,QTableView* Widget3,QTableView* Widget4, QTableView* Widget5);

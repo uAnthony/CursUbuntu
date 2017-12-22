@@ -21,7 +21,6 @@ void tasks::draw_table(int index)
   A->draw(index,form->getwidget(3),form->getqtableview());
 }
 
-
 void tasks::draw_my_sets()
 {
     A->my_sets(form->getwidget(3),form->get_my_sets());
@@ -34,12 +33,11 @@ void tasks::make_lowprise_set(int index,double money,const QString& name)
     {
         switch (index) {
         case 0: {
-           A->make_mining_set(form->getwidget(1),form->getqtableviewset());
+           A->make_mining_set(form->getqtableviewset(),money);
             break;
         }
         case 1: {
-
-            A->make_gaming_set(form->getwidget(1),form->getqtableviewset(),money);
+            A->make_gaming_set(form->getqtableviewset(),money);
             break;
         }
         }
@@ -50,7 +48,6 @@ void tasks::make_lowprise_set(int index,double money,const QString& name)
       form->get_error_label()->setText("Not enough money for configuration");
   }
 }
-
 
 void tasks::sql_save_set()
 {
