@@ -93,9 +93,6 @@ QTableView* MainWindow::get_my_sets()
    return ui->MySets;
 }
 
-
-
-
 void MainWindow::send_index0()
 {
     toggled_button = 0;
@@ -131,8 +128,6 @@ void MainWindow::send_index5()
     toggled_button = 5;
     emit draw(5);
 }
-
-
 
 void MainWindow::send_assignment()
 {   

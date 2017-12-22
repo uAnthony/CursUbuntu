@@ -219,9 +219,9 @@ if (check == true)
         disk.price = query5.value(1).toInt();
     }
 
-    current_set.total_power = current_set.total_power*1.33;
-    QString total_power1 = QString::number(current_set.total_power);
-    table_model->setData(table_model->index(0,11), current_set.total_power);
+    int set_power_limit = current_set.total_power*1.33;
+    QString total_power1 = QString::number(set_power_limit);
+    table_model->setData(table_model->index(0,11),set_power_limit);
 
 
     QSqlQuery query6(QString("SELECT \"Model\",\"Price\", \"Power_limit\" FROM \"Power_supply\" WHERE \"Price\" = (SELECT min(\"Price\") FROM (SELECT \"Model\",\"Price\" FROM \"Power_supply\" WHERE \"Power_limit\" > \'%1\') AS limit1);").arg(total_power1));
@@ -264,21 +264,20 @@ void Query1::make_gaming_set(QWidget *window, QTableView* table, int money)
     }
     else budget = false;
     if(budget)
-     {
-    //минимальная сборка
-   budget = make_gaming_level(window,table,money,4,4096,4096);
-   if(budget) {
-   //оптимальная сборка
-   budget = make_gaming_level(window,table,money,8,4096,4096);
-
-   }
+    {
+        //минимальная сборка
+        budget = make_gaming_level(table,money,4,4096,4096);
+        if(budget) {
+            //оптимальная сборка
+            budget = make_gaming_level(table,money,8,6144,8192);
+            if(budget) {
+               upgrade_graphic_card(table,money,0);
+            }
+        }
     }
 }
 
-
-
-
-bool Query1::make_gaming_level(QWidget *window, QTableView* table, int money,int cores,int card_memory,int memory_capacity)
+bool Query1::make_gaming_level(QTableView* table, int money,int cores,int card_memory,int memory_capacity)
 {
     budget = true;
     QString model;
@@ -301,8 +300,6 @@ bool Query1::make_gaming_level(QWidget *window, QTableView* table, int money,int
         table->model()->setData(table->model()->index(0,8),model);
     }
     else budget = false;
-    //
-
 
     //процессор
     QString model_cpu;
@@ -330,25 +327,23 @@ bool Query1::make_gaming_level(QWidget *window, QTableView* table, int money,int
                 model_motherboard = query_motherboard.value(0).toString();
                 price_motherboard = query_motherboard.value(1).toInt();
             }
-
-
 //память
          QString model_memory;
          int price_memory;
-         //*****************************************
-
          QString capacity = QString::number(memory_capacity);
          QSqlQuery query_memory(QString("SELECT \"Model\", \"Price\" FROM \"Memory\" WHERE \"Price\" = (SELECT MIN(\"Price\") FROM \"Memory\" WHERE \"Type\" = 'DDR4' AND \"Capacity\" = \'%1\')").arg(capacity));
             while(query_memory.next()) {
                 model_memory = query_memory.value(0).toString();
                 price_memory = query_memory.value(1).toInt();
             }
-        if (current_set.total_power - cpu.power + power_cpu > power_supply.power_limit)
-            upgrade_power_supply(table,money,current_set.total_power - cpu.power + power_cpu);
+        if ((current_set.total_power - cpu.power + power_cpu)*133/100 > power_supply.power_limit)
+            upgrade_power_supply(table,money,(current_set.total_power - cpu.power + power_cpu)*133/100);
 
      if(money >= current_set.total_price - cpu.price - motherboard.price - memory.price + price_cpu + price_motherboard + price_memory*2 )
             {
+                qDebug() <<  current_set.total_price;
                 current_set.total_price = current_set.total_price - cpu.price - motherboard.price - memory.price + price_cpu + price_motherboard + price_memory*2;
+                current_set.total_power = current_set.total_power - cpu.power + power_cpu;
                 table->model()->setData(table->model()->index(0,4),model_cpu);
                 cpu.price = price_cpu;
                 cpu.power = power_cpu;
@@ -359,7 +354,7 @@ bool Query1::make_gaming_level(QWidget *window, QTableView* table, int money,int
                 memory.price = price_memory;
                 table->model()->setData(table->model()->index(0,7),2);
                 table->model()->setData(table->model()->index(0,10),current_set.total_price);
-                table->model()->setData(table->model()->index(0,11),current_set.total_power);
+                table->model()->setData(table->model()->index(0,11),(current_set.total_power*133/100));
      } else budget = false;
 
 //Видеокарта
@@ -370,10 +365,9 @@ bool Query1::make_gaming_level(QWidget *window, QTableView* table, int money,int
          int bench_strike;
          int bench_lux;
          int bench_future;
-//*****************************
 
      QString str_card_memory = QString::number(card_memory);
-     QSqlQuery query_card(QString("SELECT \"Model\", \"Price\", \"Power_consumption_loaded\", \"Score_3dMark_CloudGate\", \"Score_3dMark_Strike\", \"Score_LuxMark\", \"Score_futuremark\" FROM \"Graphic_card\" WHERE \"Price\" = (SELECT MIN(\"Price\") FROM(SELECT \"Price\" FROM \"Graphic_card\"  WHERE \"Memory_capacity\" = \'%1\')AS Q1)").arg(str_card_memory));
+     QSqlQuery query_card(QString("SELECT \"Model\", \"Price\", \"Power_consumption_loaded\", CASE WHEN \"Score_3dMark_CloudGate\" IS NULL THEN '0' ELSE CAST (\"Score_3dMark_CloudGate\" AS INTEGER) END \"Score_3dMark_CloudGate\", CASE WHEN \"Score_3dMark_Strike\" IS NULL THEN '0' ELSE CAST (\"Score_3dMark_Strike\" AS INTEGER) END \"Score_3dMark_Strike\",  CASE WHEN \"Score_LuxMark\" IS NULL THEN '0' ELSE CAST (\"Score_LuxMark\" AS INTEGER) END \"Score_LuxMark\", CASE WHEN \"Score_futuremark\" IS NULL THEN '0' ELSE CAST (\"Score_futuremark\" AS INTEGER) END \"Score_futuremark\"  FROM \"Graphic_card\" WHERE \"Price\" = (SELECT MIN(\"Price\") FROM(SELECT \"Price\" FROM \"Graphic_card\"  WHERE \"Memory_capacity\" >= \'%1\')AS Q1)").arg(str_card_memory));
         while(query_card.next()) {
             model_card = query_card.value(0).toString();
             price_card = query_card.value(1).toInt();
@@ -384,8 +378,9 @@ bool Query1::make_gaming_level(QWidget *window, QTableView* table, int money,int
             bench_future = query_card.value(6).toInt();
           }
 
-     if (current_set.total_power - card.power +  power_consumption_card > power_supply.power_limit)
-          upgrade_power_supply(table,money,current_set.total_power - card.power +  power_consumption_card);
+
+     if ((current_set.total_power - card.power +  power_consumption_card)*133/100 > power_supply.power_limit)
+          upgrade_power_supply(table,money,(current_set.total_power - card.power +  power_consumption_card)*133/100);
 
      if(money >= current_set.total_price - card.price + price_card)
      {
@@ -399,16 +394,79 @@ bool Query1::make_gaming_level(QWidget *window, QTableView* table, int money,int
          card.futuremark = bench_future;
          table->model()->setData(table->model()->index(0,2),model_card);
          table->model()->setData(table->model()->index(0,10), current_set.total_price);
-         table->model()->setData(table->model()->index(0,11), current_set.total_power);
+         table->model()->setData(table->model()->index(0,11), current_set.total_power*133/100);
      } else budget = false;
 return budget;
 }
 
 
 
+void Query1::upgrade_graphic_card(QTableView* table, int money,int power)
+{
+     int n;
+     QSqlQuery query_number("SELECT  COUNT(*) FROM (SELECT \"Model\", \"Price\" , \"Score_3dMark_CloudGate\", \"Score_3dMark_Strike\",  \"Score_LuxMark\", \"Score_futuremark\"FROM \"Graphic_card\" WHERE \"Memory_capacity\" >= '4096' ORDER BY \"Price\") AS number2 ");
+          while(query_number.next()) {
+             n = query_number.value(0).toInt();
+          }
 
 
+    for (int i = 1; i <= n; i++)
+    {
+        QString model_card;
+        int price_card = 0;
+        int power_consumption_card = 0;
+        int bench_cloud = 0;
+        int bench_strike = 0;
+        int bench_lux = 0;
+        int bench_future = 0;
+        int number = 0;
+        int n;
 
+        QString str_count = QString::number(i);
+
+        QSqlQuery query_card1(QString("SELECT \"number1\", \"Model\", \"Price\",\"Power_consumption_loaded\" , CASE WHEN \"Score_3dMark_CloudGate\" IS NULL THEN '0' ELSE CAST (\"Score_3dMark_CloudGate\" AS INTEGER) END \"Score_3dMark_CloudGate\", CASE WHEN \"Score_3dMark_Strike\" IS NULL THEN '0' ELSE CAST (\"Score_3dMark_Strike\" AS INTEGER) END \"Score_3dMark_Strike\",  CASE WHEN \"Score_LuxMark\" IS NULL THEN '0' ELSE CAST (\"Score_LuxMark\" AS INTEGER) END \"Score_LuxMark\", CASE WHEN \"Score_futuremark\" IS NULL THEN '0' ELSE CAST (\"Score_futuremark\" AS INTEGER) END \"Score_futuremark\" FROM (SELECT row_number()  OVER (ORDER BY \"Price\") AS Number1, \"Model\", \"Price\" , \"Power_consumption_loaded\",\"Score_3dMark_CloudGate\", \"Score_3dMark_Strike\",  \"Score_LuxMark\", \"Score_futuremark\" FROM \"Graphic_card\" WHERE \"Memory_capacity\" >= '4096' ORDER BY \"Price\") AS number2 WHERE number1 = \'%1\'").arg(str_count));
+        while(query_card1.next()) {
+            number = query_card1.value(0).toInt();
+            model_card = query_card1.value(1).toString();
+            price_card = query_card1.value(2).toInt();
+            power_consumption_card = query_card1.value(3).toInt();
+            bench_cloud = query_card1.value(4).toInt();
+            bench_strike = query_card1.value(5).toInt();
+            bench_lux = query_card1.value(6).toInt();
+            bench_future = query_card1.value(7).toInt();
+        }
+
+        if ((current_set.total_power - card.power +  power_consumption_card)*133/100 > power_supply.power_limit)
+            upgrade_power_supply(table,money,(current_set.total_power - card.power +  power_consumption_card)*133/100);
+
+        if(money >= current_set.total_price - card.price + price_card)
+        {
+            int counter = 0;
+            if (bench_cloud > card.dmark_cloud_gate)
+                ++counter;
+            if ( bench_strike > card.dmark_strike)
+                ++counter;
+            if (bench_lux > card.luxmark)
+                ++counter;
+            if ( bench_future > card.futuremark)
+                ++counter;
+            if (counter >= 2){
+                current_set.total_price = current_set.total_price - card.price + price_card;
+                current_set.total_power = current_set.total_power - card.power + power_consumption_card;
+                card.price = price_card;
+                card.power = power_consumption_card;
+                card.dmark_cloud_gate = bench_cloud;
+                card.dmark_strike = bench_strike;
+                card.luxmark = bench_lux;
+                card.futuremark = bench_future;
+                table->model()->setData(table->model()->index(0,2),model_card);
+                table->model()->setData(table->model()->index(0,10), current_set.total_price);
+                table->model()->setData(table->model()->index(0,11), current_set.total_power*133/100);
+            }
+        } else budget = false;
+
+}
+}
 
 
 void Query1::upgrade_power_supply(QTableView* table, int money,int power)
@@ -417,6 +475,8 @@ void Query1::upgrade_power_supply(QTableView* table, int money,int power)
     int price;
     int power_limit;
     QString my_power = QString::number(power);
+
+    //SELECT "number1", "Model", "Price", CASE WHEN "Score_3dMark_CloudGate" IS NULL THEN '0' ELSE CAST ("Score_3dMark_CloudGate" AS INTEGER) END "Score_3dMark_CloudGate", CASE WHEN "Score_3dMark_Strike" IS NULL THEN '0' ELSE CAST ("Score_3dMark_Strike" AS INTEGER) END "Score_3dMark_Strike", CASE WHEN "Score_LuxMark" IS NULL THEN '0' ELSE CAST ("Score_LuxMark" AS INTEGER) END "Score_LuxMark", CASE WHEN "Score_futuremark" IS NULL THEN '0' ELSE CAST ("Score_futuremark" AS INTEGER) END "Score_futuremark" FROM (SELECT row_number()  OVER (ORDER BY "Price") AS Number1, "Model", "Price" , "Score_3dMark_CloudGate", "Score_3dMark_Strike",  "Score_LuxMark", "Score_futuremark" FROM "Graphic_card" WHERE "Memory_capacity" >= '4096' ORDER BY "Price") AS number2 WHERE number1 = '6'
 
     QSqlQuery query_power_supply(QString("SELECT \"Model\", \"Price\",\"Power_limit\"  FROM \"Power_supply\" WHERE \"Price\" = (SELECT MIN(\"Price\") FROM \"Power_supply\" WHERE \"Power_limit\" >= \'%1\')").arg(my_power));
         while(query_power_supply.next()) {
@@ -431,7 +491,7 @@ void Query1::upgrade_power_supply(QTableView* table, int money,int power)
             power_supply.price = price;
             power_supply.power_limit = power_limit;
             table->model()->setData(table->model()->index(0,9),model);
-        }
+        } else budget = false;
 }
 
 
@@ -441,26 +501,38 @@ void Query1::make_mining_set(QWidget *window, QTableView* table)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
-
-void Query1::make_graphic_set(QWidget *window, QTableView* table)
-{
-
-
-
-
-}
-
 
 int Query1::get_price(QString type,QString model)
 {
   QSqlQuery query_1(QString("SELECT \"Price\" FROM '%1' WHERE \"Model\"= '%2'").arg(type,model));
   return query_1.value(0).toInt();
 }
-
-
-
-
 
 
 int Query1::get_total_cost()

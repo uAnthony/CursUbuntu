@@ -10,8 +10,6 @@ class tasks : public QObject
 public:
     MainWindow* form;
     tasks();
-
-
 private:
      Query1* A;
 public slots:

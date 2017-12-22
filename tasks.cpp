@@ -27,8 +27,6 @@ void tasks::draw_my_sets()
     A->my_sets(form->getwidget(3),form->get_my_sets());
 }
 
-
-
 void tasks::make_lowprise_set(int index,double money,const QString& name)
 {
     A->generate_lowprise_set(form->getwidget(1),form->getqtableviewset(),name);

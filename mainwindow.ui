@@ -117,11 +117,6 @@
            <string>Gaming</string>
           </property>
          </item>
-         <item>
-          <property name="text">
-           <string>Graphic</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item>
@@ -326,8 +321,8 @@
        <rect>
         <x>210</x>
         <y>20</y>
-        <width>681</width>
-        <height>401</height>
+        <width>861</width>
+        <height>471</height>
        </rect>
       </property>
      </widget>
